@@ -35,12 +35,6 @@ class PredictInput(BaseModel):
     C_shifts:list[float]|None=None
     H_split:list[str]|None=None
 
-class PredictInputMCP(BaseModel):
-    smiles_list:str
-    H_shifts:list[float]|None=None
-    C_shifts:list[float]|None=None
-    H_split:list[str]|None=None
-
 class Constraint(BaseModel):
     formula: str | None = None
     H_split: list[str] | None = None

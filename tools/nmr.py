@@ -5,7 +5,6 @@ DEFAULT_TIMEOUT = Timeout(60.0, connect=300.0)
 from structs.nmr import (
     SearchInput,
     PredictInput,
-    PredictInputMCP,
     ReversePredictInput,
     InputNMR,
     Result,
@@ -28,15 +27,9 @@ async def NMR_search(data:SearchInput)-> RES[list[Result]]:
         return RES(code=-1, msg=f"nmr search error: {e}")
 
 
-async def NMR_predict(data:PredictInputMCP)->RES[list[Result]]:
+async def NMR_predict(data:PredictInput)->RES[list[Result]]:
     try:
-        _data = PredictInput(
-            smiles_list=[data.smiles_list],
-            H_shifts=data.H_shifts,
-            C_shifts=data.C_shifts,
-            H_split=data.H_split,
-        )
-        payload = InputNMR(predict=_data)
+        payload = InputNMR(predict=data)
         async with httpx.AsyncClient(timeout=DEFAULT_TIMEOUT) as client:
             url = "http://101.126.67.113:8090/nmr_predict_service"
 
