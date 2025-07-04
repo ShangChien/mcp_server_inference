@@ -15,7 +15,7 @@ async def NMR_search(data:SearchInput)-> RES[list[Result]]:
     try:
         payload = InputNMR(search=data)
         async with httpx.AsyncClient(timeout=DEFAULT_TIMEOUT) as client:
-            url = "http://101.126.67.113:8090/nmr_predict_service"
+            url = "http://101.126.67.113:8090/sync_nmr_service_mcp"
 
             payload = payload.model_dump(exclude_none=True)
             response = await client.post(url, json=payload)
@@ -31,7 +31,7 @@ async def NMR_predict(data:PredictInput)->RES[list[Result]]:
     try:
         payload = InputNMR(predict=data)
         async with httpx.AsyncClient(timeout=DEFAULT_TIMEOUT) as client:
-            url = "http://101.126.67.113:8090/nmr_predict_service"
+            url = "http://101.126.67.113:8090/sync_nmr_service_mcp"
 
             payload = payload.model_dump(exclude_none=True)
             response = await client.post(url, json=payload)
@@ -47,7 +47,7 @@ async def NMR_reverse_predict(data:ReversePredictInput) ->RES[list[Result]]:
     try:
         payload = InputNMR(reverse_predict=data)
         async with httpx.AsyncClient(timeout=DEFAULT_TIMEOUT) as client:
-            url = "http://101.126.67.113:8090/nmr_predict_service"
+            url = "http://101.126.67.113:8090/sync_nmr_service_mcp"
 
             payload = payload.model_dump(exclude_none=True)
             response = await client.post(url, json=payload)
