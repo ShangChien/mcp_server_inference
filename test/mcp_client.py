@@ -38,7 +38,7 @@ async def main():
 
         
         # Execute operations
-        result = await client.call_tool("ADMET predict",{'data': {"smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"}})
+        result = await client.call_tool("Pharmacokinetics_Service",{'data': {"smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"}})
         print(result)
 
 asyncio.run(main())
