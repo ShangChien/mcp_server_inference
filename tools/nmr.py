@@ -8,12 +8,13 @@ from structs.nmr import (
     ReversePredictInput,
     InputNMR,
     Result,
+    TaskSubmit,
 )
 from structs.base import RES
 
 async def NMR_search(data:SearchInput)-> RES[list[Result]]:
     try:
-        payload = InputNMR(search=data)
+        payload = TaskSubmit(input_data=InputNMR(search=data))
         async with httpx.AsyncClient(timeout=DEFAULT_TIMEOUT) as client:
             url = "http://101.126.67.113:8090/sync_nmr_service_mcp"
 
@@ -21,7 +22,7 @@ async def NMR_search(data:SearchInput)-> RES[list[Result]]:
             response = await client.post(url, json=payload)
             response.raise_for_status()
             res_raw = response.json()
-            res = RES[list[Result]](**res_raw)
+            res = RES[list[Result]](**res_raw['data']['result'])
             return res
     except Exception as e:
         return RES(code=-1, msg=f"nmr search error: {e}")
@@ -29,7 +30,7 @@ async def NMR_search(data:SearchInput)-> RES[list[Result]]:
 
 async def NMR_predict(data:PredictInput)->RES[list[Result]]:
     try:
-        payload = InputNMR(predict=data)
+        payload = TaskSubmit(input_data=InputNMR(predict=data))
         async with httpx.AsyncClient(timeout=DEFAULT_TIMEOUT) as client:
             url = "http://101.126.67.113:8090/sync_nmr_service_mcp"
 
@@ -37,15 +38,16 @@ async def NMR_predict(data:PredictInput)->RES[list[Result]]:
             response = await client.post(url, json=payload)
             response.raise_for_status()
             res_raw = response.json()
-            res = RES[list[Result]](**res_raw)
+            print(res_raw)
+            res = RES[list[Result]](**res_raw['data']['result'])
             return res
     except Exception as e:
-        return RES(code=-1, msg=f"nmr search error: {e}")
+        return RES(code=-1, msg=f"nmr predict error: {e}")
 
 
 async def NMR_reverse_predict(data:ReversePredictInput) ->RES[list[Result]]:
     try:
-        payload = InputNMR(reverse_predict=data)
+        payload = TaskSubmit(input_data=InputNMR(reverse_predict=data))
         async with httpx.AsyncClient(timeout=DEFAULT_TIMEOUT) as client:
             url = "http://101.126.67.113:8090/sync_nmr_service_mcp"
 
@@ -53,7 +55,7 @@ async def NMR_reverse_predict(data:ReversePredictInput) ->RES[list[Result]]:
             response = await client.post(url, json=payload)
             response.raise_for_status()
             res_raw = response.json()
-            res = RES[list[Result]](**res_raw)
+            res = RES[list[Result]](**res_raw['data']['result'])
             return res
     except Exception as e:
-        return RES(code=-1, msg=f"nmr search error: {e}")
+        return RES(code=-1, msg=f"nmr reverse_predict error: {e}")
