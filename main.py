@@ -14,9 +14,9 @@ from tools.nmr import (
     NMR_search,
     NMR_predict,
     NMR_reverse_predict,
-    SearchInput,
-    PredictInput,
-    ReversePredictInput,
+    SearchParam,
+    PredictParam,
+    ReversePredictParam,
     InputNMR,
     Result,
 )
@@ -70,21 +70,21 @@ async def pk_meta():
     name="NMR_search",
     description="Search for molecule using NMR-characteristics(H_shifts or C_shifts).",
 )
-async def NMR_search_tool(data: SearchInput) -> RES[list[Result]]:
+async def NMR_search_tool(data: SearchParam) -> RES[list[Result]]:
     return await NMR_search(data)
 
 @mcp.tool(
     name="NMR_predict",
     description="Predict the NMR-characteristics(H_shifts or C_shifts) of a molecule(smiles).",
 )
-async def NMR_predict_tool(data: PredictInput) -> RES[list[Result]]:
+async def NMR_predict_tool(data: PredictParam) -> RES[list[Result]]:
     return await NMR_predict(data)
 
 @mcp.tool(
     name="NMR_reverse_predict",
     description="Predict the molecule(smiles) according NMR-characteristics(H_shifts or C_shifts).",
 )
-async def NMR_reverse_predict_tool(data: ReversePredictInput) -> RES[list[Result]]:
+async def NMR_reverse_predict_tool(data: ReversePredictParam) -> RES[list[Result]]:
     return await NMR_reverse_predict(data)
 
 
