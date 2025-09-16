@@ -24,10 +24,10 @@ class ConfigSolver(ConfigBase):
 
 
 class SearchParam(BaseModel):
-    H_shifts: list[float]|None = Field(None, description="List of proton NMR chemical shifts in ppm")
-    C_shifts: list[float]|None = Field(None, description="List of carbon-13 NMR chemical shifts in ppm")
-    allowed_elements: list[str]|None = Field(None, description="Allowed chemical elements for molecular composition")
-    topk: int = Field(10, description="Number of top results to return")
+    H_shifts: list[float]|None = Field(None, description="List of proton (1H) NMR chemical shifts in ppm, repeated according to proton multiplicity. Example: [2.1, 2.1, 2.1, 2.1, 2.1, 2.1] from '1H NMR (CDCl3, 400 MHz) 2.1 (s, 6H).'")
+    C_shifts: list[float]|None = Field(None, description="List of carbon-13 (13C) NMR chemical shifts in ppm. Example: [205.0, 30.0] from '13C NMR (CDCl3, 100 MHz) 205.0, 30.0.'")
+    allowed_elements: list[str]|None = Field(None, description="Allowed chemical elements for molecular composition. Example: ['C', 'H', 'O', 'N']")
+    topk: int = Field(10, description="Number of top results to return (default: 10)")
     
 class SearchInput(BaseModel):
     H_split: list[str]|None = None
@@ -40,8 +40,8 @@ class SearchInput(BaseModel):
 
 class PredictParam(BaseModel):
     smiles_list: list[str] = Field(..., description="List of SMILES strings for molecules to predict NMR spectra")
-    H_shifts: list[float]|None = Field(None, description="Reference proton NMR chemical shifts in ppm, repeated according to proton multiplicity")
-    C_shifts: list[float]|None = Field(None, description="Reference list of carbon-13 NMR chemical shifts in ppm")
+    H_shifts: list[float]|None = Field(None, description="List of proton (1H) NMR chemical shifts in ppm, repeated according to proton multiplicity. Example: [2.1, 2.1, 2.1, 2.1, 2.1, 2.1] from '1H NMR (CDCl3, 400 MHz) 2.1 (s, 6H).'")
+    C_shifts: list[float]|None = Field(None, description="List of carbon-13 (13C) NMR chemical shifts in ppm. Example: [205.0, 30.0] from '13C NMR (CDCl3, 100 MHz) 205.0, 30.0.'")
     
 class PredictInput(BaseModel):
     smiles_list: list[str]
@@ -50,11 +50,11 @@ class PredictInput(BaseModel):
     H_split: list[str]|None = None
     
 class ReversePredictParam(BaseModel):
-    H_shifts: list[float] | None = Field(None, description="List of proton NMR chemical shifts in ppm, repeated according to proton multiplicity")
-    C_shifts: list[float] | None = Field(None, description="List of carbon-13 NMR chemical shifts in ppm")
-    allowed_elements: list[str] | None = Field(None, description="Allowed chemical elements for molecular composition")
-    formula: str | None = Field(None, description="Molecular formula constraint")
-    topk: int = Field(10, description="Number of top results to return")
+    H_shifts: list[float]|None = Field(None, description="List of proton (1H) NMR chemical shifts in ppm, repeated according to proton multiplicity. Example: [2.1, 2.1, 2.1, 2.1, 2.1, 2.1] from '1H NMR (CDCl3, 400 MHz) 2.1 (s, 6H).'")
+    C_shifts: list[float]|None = Field(None, description="List of carbon-13 (13C) NMR chemical shifts in ppm. Example: [205.0, 30.0] from '13C NMR (CDCl3, 100 MHz) 205.0, 30.0.'")
+    allowed_elements: list[str]|None = Field(None, description="Allowed chemical elements for molecular composition. Example: ['C', 'H', 'O', 'N']")
+    formula: str|None = Field(None, description="Molecular formula constraint for the target molecule. Example: 'C6H12O6'")
+    topk: int = Field(10, description="Number of top results to return (default: 10)")
 
 class Constraint(BaseModel):
     formula: str | None = None
@@ -85,6 +85,7 @@ class Result(BaseModel):
     H_score: float
     C_score: float
     score: float
+    svg_mol_pic_with_nmr: str
 
 class TaskSubmit(BaseModel):
     name: str = ''

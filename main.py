@@ -68,21 +68,47 @@ async def pk_meta():
 
 @mcp.tool(
     name="NMR_search",
-    description="Search for molecule using NMR-characteristics(H_shifts or C_shifts).",
-)
+    description="""Database search for molecules based on NMR spectroscopic data. For more accurate but slower reverse prediction, use NMR_reverse_predict tool.
+    
+    This tool performs molecular structure database searching using Nuclear Magnetic Resonance (NMR) spectroscopic data.
+    Input 1H/13C NMR chemical shifts to find matching molecular structures from database. Allows constraints on elemental composition.
+    
+    Input:
+        SearchParam
+
+    Returns: List of candidate molecules with SMILES, predicted NMR data, and spectral similarity scores
+    """,)
 async def NMR_search_tool(data: SearchParam) -> RES[list[Result]]:
     return await NMR_search(data)
 
 @mcp.tool(
     name="NMR_predict",
-    description="Predict the NMR-characteristics(H_shifts or C_shifts) of a molecule(smiles).",
+    description="""Predict NMR spectroscopic properties for molecular structures.
+    
+    This tool calculates simulated 1H and 13C NMR chemical shifts for given molecular structures.
+    Input SMILES strings to simulate NMR spectra and validate structural assignments. Allows comparison of reference NMR spectra with predicted spectra for similarity scoring.
+    
+    Input:
+        PredictParam
+    
+    Returns: List of molecules with predicted NMR chemical shifts and spectral similarity scores
+    """,
 )
 async def NMR_predict_tool(data: PredictParam) -> RES[list[Result]]:
     return await NMR_predict(data)
 
 @mcp.tool(
     name="NMR_reverse_predict",
-    description="Predict the molecule(smiles) according NMR-characteristics(H_shifts or C_shifts).",
+    description="""Reverse NMR analysis to propose molecular structures using molecular optimization. For fast database searching, use NMR_search tool.
+
+    This tool generates candidate molecular structures from Nuclear Magnetic Resonance (NMR) spectroscopic data.
+    Input 1H/13C NMR chemical shifts to identify compounds and determine structures. Allows constraints on elemental composition and molecular formula.
+
+    Input:
+        ReversePredictParam
+    
+    Returns: List of candidate molecules with SMILES, predicted NMR data, and spectral similarity scores
+    """,
 )
 async def NMR_reverse_predict_tool(data: ReversePredictParam) -> RES[list[Result]]:
     return await NMR_reverse_predict(data)
