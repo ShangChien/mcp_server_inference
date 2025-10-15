@@ -7,6 +7,12 @@ WORKDIR /app
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 RUN echo "Asia/Shanghai" > /etc/timezone
 
+RUN apt-get update && apt-get install -y \
+    libxrender1 \
+    libxext6 \
+    libexpat1 \
+    && rm -rf /var/lib/apt/lists/*
+
 # 将当前目录下的所有文件复制到容器的/app目录中
 COPY . /app
 RUN chmod +x /app/run.sh
