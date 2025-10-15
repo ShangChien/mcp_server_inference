@@ -28,10 +28,10 @@ demo = Demo()
 async def test():
     start = time.time()
     tasks = [
-        # NMR_search(SearchParam(C_shifts=demo.c_shifts, topk=demo.topk)),
-        # NMR_search(SearchParam(H_shifts=demo.h_shifts, C_shifts=demo.c_shifts, allowed_elements=demo.allowed_elements)),
-        # NMR_predict(PredictParam(smiles_list=[demo.smiles]*2)),
-        NMR_reverse_predict(ReversePredictParam(C_shifts=demo.c_shifts, topk=demo.topk)),
+        NMR_search(SearchParam(C_shifts=demo.c_shifts, topk=demo.topk)),
+        NMR_search(SearchParam(H_shifts=demo.h_shifts, C_shifts=demo.c_shifts, allowed_elements=demo.allowed_elements)),
+        NMR_predict(PredictParam(smiles_list=[demo.smiles]*2)),
+        # NMR_reverse_predict(ReversePredictParam(C_shifts=demo.c_shifts, topk=demo.topk)),
         # NMR_reverse_predict(ReversePredictParam(H_shifts=demo.h_shifts, C_shifts=demo.c_shifts, allowed_elements=demo.allowed_elements, formula=demo.formula)),
     ]
     # res_list:list[RES] = await asyncio.gather(*tasks)
