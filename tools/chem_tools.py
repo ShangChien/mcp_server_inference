@@ -1,7 +1,5 @@
 from rdkit import Chem
-from rdkit import DataStructs
 from rdkit.Chem import Draw
-import numpy as np
 from typing import List, Tuple, Union
 import os
 import re
@@ -10,25 +8,6 @@ from PIL import Image
 
 from collections import defaultdict
 from IPython.display import SVG, display
-
-
-def get_canonical_smiles_from_mol(mol: Chem.Mol, remove_hs: bool = True) -> str:
-    """
-    Generates a canonical SMILES string from a molecule.
-
-    Returns:
-        str: Canonical SMILES string.
-    """
-    try:
-        mol_copy = Chem.Mol(mol)
-        # remove AtomMapNum
-        for atom in mol_copy.GetAtoms():
-            atom.SetAtomMapNum(0)
-        if remove_hs:
-            mol_copy = Chem.RemoveHs(mol_copy)
-        return Chem.MolToSmiles(mol_copy)
-    except:
-        return None
 
 
 def save_img(content: Union[str, Image.Image], save_path: str):
@@ -170,99 +149,3 @@ def draw_mol_with_nmr(mol_list: List, shifts_list: List, nmr_type: List = ["H", 
         save_img(svg, save_path)
     print(type(svg))
     return svg
-
-
-def morgan_fp(mol: Chem.Mol, fp_size=2048, radius=2, to_np=True, **kwargs):
-    """
-    Compute Morgan fingerprint for a molecule.
-    
-    Args:
-        mol (Chem.Mol): _description_
-        fp_size (int, optional): Size of the fingerprint.
-        radius (int, optional): Radius of the fingerprint.
-        to_np (bool, optional): Convert the fingerprint to numpy array.
-    """
-
-    fp = Chem.rdMolDescriptors.GetMorganFingerprintAsBitVect(mol, radius=radius, nBits=fp_size, **kwargs)
-    if to_np:
-        fp_np = np.zeros((0,), dtype=np.int32)
-        DataStructs.ConvertToNumpyArray(fp, fp_np)
-        fp = fp_np
-    return fp
-
-
-def tanimoto_morgan_similarity(mol1: Union[Chem.Mol, str], mol2: Union[Chem.Mol, str], **kwargs) -> float:
-    """
-    Compute Tanimoto similarity between two molecules using Morgan fingerprints.
-
-    Args:
-        mol1 (T.Union[Chem.Mol, str]): First molecule as RDKit molecule or SMILES string.
-        mol2 (T.Union[Chem.Mol, str]): Second molecule as RDKit molecule or SMILES string.
-    """
-    if isinstance(mol1, str):
-        mol1 = Chem.MolFromSmiles(mol1)
-    if isinstance(mol2, str):
-        mol2 = Chem.MolFromSmiles(mol2)
-    return DataStructs.TanimotoSimilarity(morgan_fp(mol1, to_np=False, **kwargs), morgan_fp(mol2, to_np=False, **kwargs))
-
-
-def get_elements_from_mol(input_data: Union[str, Chem.Mol]) -> list:
-    """
-    Extracts a list of elements from a molecule.
-    """
-    if isinstance(input_data, str):
-        mol = Chem.MolFromSmiles(input_data)
-    elif isinstance(input_data, Chem.Mol):
-        mol = input_data
-    else:
-        raise ValueError("Input data must be a SMILES string or Chem.Mol object.")
-    
-    mol = Chem.AddHs(mol)
-    atoms = [atom.GetSymbol() for atom in mol.GetAtoms()]
-    return list(set(atoms))
-
-
-def has_isotope(mol: Chem.Mol) -> bool:
-    """
-    Checks if a molecule contains isotopes.
-    """
-    for atom in mol.GetAtoms():
-        if atom.GetIsotope() != 0:
-            return True
-    return False
-
-
-def has_radical(mol: Chem.Mol) -> bool:
-    """
-    Checks if a molecule contains radicals.
-    """
-    for atom in mol.GetAtoms():
-        if atom.GetNumRadicalElectrons() > 0:
-            return True
-    return False
-
-
-def not_charged(mol: Chem.Mol) -> bool:
-    """
-    Checks if a molecule is charged based on the sum of formal charges of its atoms.
-    """
-    total_charge = sum(atom.GetFormalCharge() for atom in mol.GetAtoms())
-    return total_charge == 0
-
-
-def remove_stereo(mol: Chem.Mol) -> Chem.Mol:
-    """
-    Removes stereochemistry information from a molecule.
-    """
-    mol_copy = Chem.Mol(mol)
-    
-    for atom in mol_copy.GetAtoms():
-        atom.SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
-    for bond in mol_copy.GetBonds():
-        bond.SetStereo(Chem.BondStereo.STEREONONE)
-    
-    try:
-        Chem.SanitizeMol(mol_copy)
-        return mol_copy
-    except:
-        return None

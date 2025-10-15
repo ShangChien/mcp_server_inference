@@ -90,4 +90,5 @@ class Result(BaseModel):
     H_score: float
     C_score: float
     score: float
+    svg: str
 ```
